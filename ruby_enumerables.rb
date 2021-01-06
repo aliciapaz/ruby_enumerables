@@ -86,8 +86,39 @@ module Enumerable
         result
     end
 
+    # If no argument and no block is passed returns the number of items in the array.
+    # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
+    # If a block is passed, but no argument is passed, returns the number of items that pass the test.
+    # If an argument and a block are passed returns the number of items equal to the argument and prints a warning.
+    def my_count(a = nil)
+      count = 0
+      if !block_given? && a == nil
+        for i in self
+          count += 1
+        end
+        return count
+      end
+      if !block_given? && a != nil
+        for i in self
+          count += 1 if i == a
+        end
+        return count
+      end
+      if block_given? && a != nil
+        for i in self
+          count += 1 if i == a
+        end
+        p "Use either a block or an argument, Not Both!"
+        return count
+      end
+      for i in self
+        count += 1 if yield i
+      end
+      return count
+    end
+
 end
 
-array = [1,1,1,1]
+array = [0,1,1,2]
 
-array.my_map { |num| num * 2 }
+array.my_count(2) { |num| num >= 1 }
