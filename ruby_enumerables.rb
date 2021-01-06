@@ -118,7 +118,7 @@ module Enumerable
     end
 
     # Combines the element in an array applying a binary operation and returns the result in an accumulator variable ("memo")
-    # When a block and a symbol is given, it prints an Error message. Either a block or a symbol for a binary operation can be provided. 
+    # When a block and a symbol is given, it prints an Error message. Either a block or a symbol for a binary operation can be provided.
     # An initial value for memo can be provided. If an initial value is not provided, memo takes the value of the first element in the array.
 
     def my_inject(memo = nil, sym = nil)
@@ -151,18 +151,20 @@ module Enumerable
                 memo = yield memo, self[j]
                 j += 1
             end
-            return memo 
+            return memo
         end
         if block_given? && memo != nil
             for i in self
                 memo = yield memo, i
-            end 
+            end
             return memo
         end
-    end 
+    end
+
+    def multiply_els(array)
+      array.my_inject(:*)
+    end
 
 end
 
-array = [2,1,1,2]
-
-array.my_inject { |sum, item| sum + item }
+multiply_els([2, 4, 5])
