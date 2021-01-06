@@ -43,7 +43,7 @@ module Enumerable
       return result
     end
 
-    # Returns true if any value passes a test defined as a block. If no block is given, it returns true if any value is truthy. 
+    # Returns true if any value passes a test defined as a block. If no block is given, it returns true if any value is truthy.
     def my_any?
         result = false
         unless block_given?
@@ -60,8 +60,25 @@ module Enumerable
         return result
       end
 
+      # Returns true if none of the values passes a test (defined as a block) or if, no block is given returns true if none of the values are truthy.
+      def my_none?
+        result = true
+        unless block_given?
+          for i in self
+            result = false if i
+            break if i
+          end
+          return result
+        end
+        for i in self
+          result = false if yield i
+          break if yield i
+        end
+        return result
+      end
+
 end
 
-array = [2,2,3,4]
+array = [1,1,1,1]
 
-array.my_any? { |num| num > 1 }
+array.my_none? { |num| num > 1 }
