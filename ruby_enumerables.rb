@@ -16,7 +16,7 @@ module Enumerable
         end
     end
 
-    # Creates a new array containing the elements of self that match the provided test. 
+    # Creates a new array containing the elements of self that match the provided test.
 
     def my_select
         result = []
@@ -26,8 +26,25 @@ module Enumerable
         p result
     end
 
+    # Returns true if every value passes a test (defined as a block) or if, no block is given returns true if all values are truthy.
+    def my_all?
+      result = true
+      unless block_given?
+        for i in self
+          result = false unless i
+          break unless i
+        end
+        return result
+      end
+      for i in self
+        result = false unless yield i
+        break unless yield i
+      end
+      return result
+    end
+
 end
 
-array = [1,1,3,4]
+array = [2,2,3,4]
 
-array.my_select { |num| num > 1 }
+array.my_all? { |num| num > 1 }
