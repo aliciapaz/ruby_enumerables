@@ -165,6 +165,26 @@ module Enumerable
       array.my_inject(:*)
     end
 
+    # map that accepts procs
+    def my_map_proc(proc = nil)
+        if proc != nil && !proc.is_a?(Proc)
+            puts "Error! Argument must be a Proc"
+            return nil
+        end
+        result = []
+        for i in self
+            result.push(proc.call(i)) if proc.is_a?(Proc)
+            result.push(yield i) if block_given? && proc == nil
+        end
+            p result
+    end
+
 end
 
 multiply_els([2, 4, 5])
+
+my_proc = Proc.new { |num| num * 2 }
+
+array.my_map_proc(my_proc)
+
+
