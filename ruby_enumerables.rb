@@ -16,8 +16,18 @@ module Enumerable
         end
     end
 
+    # Creates a new array containing the elements of self that match the provided test. 
+
+    def my_select
+        result = []
+        for i in self
+            result.push(i) if yield i
+        end
+        p result
+    end
+
 end
 
 array = [1,1,3,4]
 
-array.my_each_with_index { |num, index| puts "#{index}: #{num}"}
+array.my_select { |num| num > 1 }
