@@ -61,7 +61,7 @@ module Enumerable
       end
 
       # Returns true if none of the values passes a test (defined as a block) or if, no block is given returns true if none of the values are truthy.
-      def my_none?
+    def my_none?
         result = true
         unless block_given?
           for i in self
@@ -77,8 +77,17 @@ module Enumerable
         return result
       end
 
+    # Returns an array containing the result of the block applied to each one of the elements of the array provided as argument.
+    def my_map
+        result = []
+        for i in self
+            result.push(yield i)
+        end
+        result
+    end
+
 end
 
 array = [1,1,1,1]
 
-array.my_none? { |num| num > 1 }
+array.my_map { |num| num * 2 }
