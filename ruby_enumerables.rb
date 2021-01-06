@@ -43,7 +43,7 @@ module Enumerable
       return result
     end
 
-
+    # Returns true if any value passes a test defined as a block. If no block is given, it returns true if any value is truthy. 
     def my_any?
         result = false
         unless block_given?
