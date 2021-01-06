@@ -43,8 +43,25 @@ module Enumerable
       return result
     end
 
+
+    def my_any?
+        result = false
+        unless block_given?
+          for i in self
+            result = true if i
+            break if i
+          end
+          return result
+        end
+        for i in self
+          result = true if yield i
+          break if yield i
+        end
+        return result
+      end
+
 end
 
 array = [2,2,3,4]
 
-array.my_all? { |num| num > 1 }
+array.my_any? { |num| num > 1 }
