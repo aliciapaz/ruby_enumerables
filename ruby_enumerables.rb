@@ -77,15 +77,6 @@ module Enumerable
         return result
       end
 
-    # Returns an array containing the result of the block applied to each one of the elements of the array provided as argument.
-    def my_map
-        result = []
-        for i in self
-            result.push(yield i)
-        end
-        result
-    end
-
     # If no argument and no block is passed returns the number of items in the array.
     # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
     # If a block is passed, but no argument is passed, returns the number of items that pass the test.
@@ -117,8 +108,61 @@ module Enumerable
       return count
     end
 
+    # Returns an array containing the result of the block applied to each one of the elements of the array provided as argument.
+    def my_map
+        result = []
+        for i in self
+            result.push(yield i)
+        end
+        result
+    end
+
+    # Combines the element in an array applying a binary operation and returns the result in an accumulator variable ("memo")
+    # When a block and a symbol is given, it prints an Error message. Either a block or a symbol for a binary operation can be provided. 
+    # An initial value for memo can be provided. If an initial value is not provided, memo takes the value of the first element in the array.
+
+    def my_inject(memo = nil, sym = nil)
+        if block_given? && sym !=nil || memo.is_a?(Symbol)
+            p "Wrong input. You can not pass a symbol and a block"
+            return nil
+        end
+        if memo.is_a? Symbol
+            sym = memo
+            memo = self[0]
+            j = 0
+            while j < self.length - 1
+                memo = self[j+1].public_send(sym,memo)
+                j += 1
+            end
+            return memo
+        end
+        if memo !=nil && sym !=nil
+            j = 0
+            while j < self.length
+                memo = self[j].public_send(sym,memo)
+                j += 1
+            end
+            return memo
+        end
+        if block_given? && memo == nil
+            memo = self[0]
+            j = 0
+            while j < self.length - 1
+                memo = yield memo, self[j]
+                j += 1
+            end
+            return memo 
+        end
+        if block_given? && memo != nil
+            for i in self
+                memo = yield memo, i
+            end 
+            return memo
+        end
+    end 
+
 end
 
-array = [0,1,1,2]
+array = [2,1,1,2]
 
-array.my_count(2) { |num| num >= 1 }
+array.my_inject { |sum, item| sum + item }
