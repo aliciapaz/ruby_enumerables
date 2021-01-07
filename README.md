@@ -50,7 +50,7 @@ Clone the repository from Github: [Ruby Enumerables](https://github.com/aliciapa
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/jpdf00/bubble_sort/issues)
+Feel free to check the [issues page](https://github.com/aliciapaz/ruby_enumerables/issues)
 
 ## Show your support
 
