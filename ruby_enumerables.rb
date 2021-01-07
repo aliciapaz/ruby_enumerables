@@ -122,41 +122,34 @@ module Enumerable
   # Either a block or a symbol for a binary operation can be provided.
   # An initial value for memo can be provided.
   # If an initial value is not provided, memo takes the value of the first element in the array.
+
   def my_inject(memo = nil, sym = nil)
-    if block_given? && (!sym.nil? || memo.is_a?(Symbol))
+    if block_given? && (!sym.nil? || memo.is_a?(Symbol)) # a block and a symbol is given
       p 'Wrong input. You can not pass a symbol and a block'
       return nil
     end
-    unless memo.nil?
-      if memo.is_a? Symbol
-        sym = memo
-        memo = self[0]
-      else
-        temp = memo
-        check = true
-      end
-      j = 0
-      while j < length - 1
-        memo = self[j + 1].public_send(sym, memo)
+    first = self[0]
+    if memo.is_a? Symbol # assigning the symbol to the correct variable, which is sym
+      sym = memo
+      memo = nil # now we now that we have a symbol and no initial value for memo
+    end
+    unless sym.nil? # a symbol is given
+      j = 1
+      while j < length
+        first = self[j].public_send(sym, first)
         j += 1
       end
-      memo = temp.public_send(sym, memo) if check
-      return memo
+      first = first.public_send(sym, memo) unless memo.nil? # a symbol and an initial value are given
+      return first
     end
-    if block_given? && memo.nil?
-      memo = self[0]
-      j = 0
-      while j < length - 1
-        memo = yield memo, self[j]
+    if block_given? # block is given
+      j = 1
+      while j < length
+        first = yield first, self[j]
         j += 1
       end
-      return memo
-    end
-    if block_given? && !memo.nil?
-      my_each do |i|
-        memo = yield memo, i
-      end
-      memo
+      first = yield first, memo unless memo.nil? # a block and an initial value are given
+      first
     end
   end
 
