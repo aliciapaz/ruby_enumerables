@@ -122,54 +122,42 @@ module Enumerable
   # Either a block or a symbol for a binary operation can be provided.
   # An initial value for memo can be provided.
   # If an initial value is not provided, memo takes the value of the first element in the array.
-
   def my_inject(memo = nil, sym = nil)
-    if block_given? && (!sym.nil? || memo.is_a?(Symbol)) # a block and a symbol is given
-      p 'Wrong input. You can not pass a symbol and a block'
-      return nil
-    end
-    first = self[0]
-    if memo.is_a? Symbol # assigning the symbol to the correct variable, which is sym
+    if memo.is_a? Symbol
       sym = memo
-      memo = nil # now we now that we have a symbol and no initial value for memo
+      memo = nil
     end
-    unless sym.nil? # a symbol is given
-      j = 1
-      while j < length
-        first = self[j].public_send(sym, first)
-        j += 1
-      end
-      first = first.public_send(sym, memo) unless memo.nil? # a symbol and an initial value are given
-      return first
+    init_sym = self[0]
+    init_block = self[0]
+    j = 1
+    while j < length
+      init_sym = self[j].public_send(sym, init_sym) unless sym.nil?
+      init_block = yield init_block, self[j] if block_given?
+      j += 1
     end
-    if block_given? # block is given
-      j = 1
-      while j < length
-        first = yield first, self[j]
-        j += 1
-      end
-      first = yield first, memo unless memo.nil? # a block and an initial value are given
-      first
-    end
+    init_sym = init_sym.public_send(sym, memo) unless memo.nil? || sym.nil?
+    init_block = yield init_block, memo unless memo.nil? || !block_given?
+    return init_sym unless sym.nil?
+    return init_block if block_given?
   end
+end
 
-  def multiply_els(array)
-    array.my_inject(:*)
-  end
+def multiply_els(array)
+  array.my_inject(:*)
+end
 
-  # map that accepts procs
-  def my_map_proc(input_proc = nil)
-    if !input_proc.nil? && !input_proc.is_a?(Proc)
-      puts 'Error! Argument must be a Proc'
-      return nil
-    end
-    result = []
-    my_each do |i|
-      result.push(input_proc.call(i)) if input_proc.is_a?(Proc)
-      result.push(yield i) if block_given? && input_proc.nil?
-    end
-    p result
+# map that accepts procs
+def my_map_proc(input_proc = nil)
+  if !input_proc.nil? && !input_proc.is_a?(Proc)
+    puts 'Error! Argument must be a Proc'
+    return nil
   end
+  result = []
+  my_each do |i|
+    result.push(input_proc.call(i)) if input_proc.is_a?(Proc)
+    result.push(yield i) if block_given? && input_proc.nil?
+  end
+  p result
 end
 
 multiply_els([2, 4, 5])
