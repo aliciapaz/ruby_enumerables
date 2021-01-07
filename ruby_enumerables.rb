@@ -1,4 +1,5 @@
 # rubocop:disable Style/For
+# rubocop:disable Metrics/ModuleLength
 
 module Enumerable
   # Iterates through the object, identical to #each
@@ -87,22 +88,16 @@ module Enumerable
   def my_count(input = nil)
     count = 0
     if !block_given? && input.nil?
-      my_each do |_i|
+      my_each do
         count += 1
       end
       return count
     end
-    if !block_given? && !input.nil?
+    unless input.nil?
       my_each do |i|
         count += 1 if i == input
       end
-      return count
-    end
-    if block_given? && !input.nil?
-      my_each do |i|
-        count += 1 if i == input
-      end
-      p 'Use either a block or an argument, Not Both!'
+      p 'Use either a block or an argument, Not Both!' if block_given?
       return count
     end
     my_each do |i|
@@ -128,26 +123,24 @@ module Enumerable
   # An initial value for memo can be provided.
   # If an initial value is not provided, memo takes the value of the first element in the array.
   def my_inject(memo = nil, sym = nil)
-    if block_given? && !sym.nil? || memo.is_a?(Symbol)
+    if block_given? && (!sym.nil? || memo.is_a?(Symbol))
       p 'Wrong input. You can not pass a symbol and a block'
       return nil
     end
-    if memo.is_a? Symbol
-      sym = memo
-      memo = self[0]
+    unless memo.nil?
+      if memo.is_a? Symbol
+        sym = memo
+        memo = self[0]
+      else
+        temp = memo
+        check = true
+      end
       j = 0
       while j < length - 1
         memo = self[j + 1].public_send(sym, memo)
         j += 1
       end
-      return memo
-    end
-    if !memo.nil? && !sym.nil?
-      j = 0
-      while j < length
-        memo = self[j].public_send(sym, memo)
-        j += 1
-      end
+      memo = temp.public_send(sym, memo) if check
       return memo
     end
     if block_given? && memo.nil?
@@ -193,3 +186,4 @@ my_proc = proc { |num| num * 2 }
 array.my_map_proc(my_proc)
 
 # rubocop:enable Style/For
+# rubocop:enable Metrics/ModuleLength
