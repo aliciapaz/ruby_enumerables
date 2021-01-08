@@ -2,8 +2,10 @@
 # rubocop:disable Metrics/ModuleLength
 
 module Enumerable
+
   # Iterates through the object, identical to #each
   def my_each
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
     for i in self
       yield i
     end
@@ -11,15 +13,18 @@ module Enumerable
 
   # Iterates through the object, returning value and index. Identical to #each_with_index
   def my_each_with_index
-    i = 0
-    while i < length
-      yield self[i], i
-      i += 1
-    end
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
+    j = 0
+    for i in self do
+        yield i, j
+        j += 1
+    end 
+    self
   end
 
   # Creates a new array containing the elements of self that match the provided test.
   def my_select
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
     result = []
     my_each do |i|
       result.push(i) if yield i
@@ -109,6 +114,7 @@ module Enumerable
   # Returns an array containing the result of the block provided
   # applied to each one of the elements of the array provided as argument.
   def my_map
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
     result = []
     my_each do |i|
       result.push(yield i)
@@ -148,6 +154,7 @@ end
 
 # map that accepts procs
 def my_map_proc(input_proc = nil)
+  return enum_for(:each) if input_proc.nil? && !block_given? # returns an Enumerator when no block nor proc are given
   if !input_proc.nil? && !input_proc.is_a?(Proc)
     puts 'Error! Argument must be a Proc'
     return nil
@@ -162,9 +169,6 @@ end
 
 multiply_els([2, 4, 5])
 
-my_proc = proc { |num| num * 2 }
-
-array.my_map_proc(my_proc)
 
 # rubocop:enable Style/For
 # rubocop:enable Metrics/ModuleLength
