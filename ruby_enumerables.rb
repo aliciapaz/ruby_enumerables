@@ -40,6 +40,9 @@ module Enumerable
           if input.class == Class && !((i).is_a?(input))
               result = false
               break
+          elsif input.is_a?(Regexp) && !(input.match?(i))
+            result = false
+            break
           elsif !block_given? && !i
               result = false
               break
@@ -48,44 +51,52 @@ module Enumerable
               break
           end
       end
-      return result
+      result
   end
 
   # Returns true if any value passes a test defined as a block.
   # If no block is given, it returns true if any value is truthy.
-  def my_any?
+  def my_any?(input = nil)
     result = false
-    unless block_given?
-      my_each do |i|
-        result = true if i
-        break if i
-      end
-      return result
-    end
-    my_each do |i|
-      result = true if yield i
-      break if yield i
+    each do |i|
+        if input.class == Class && ((i).is_a?(input))
+            result = true
+            break
+        elsif input.is_a?(Regexp) && (input.match?(i))
+            result = true
+            break
+        elsif !block_given? && input.nil? && i
+            result = true
+            break
+        elsif block_given? && yield(i)
+            result = true
+            break
+        end
     end
     result
-  end
+end
 
   # Returns true if none of the values passes a test (defined as a block) or
   # if no block is given returns true if none of the values are truthy.
-  def my_none?
+  def my_none?(input = nil)
     result = true
-    unless block_given?
-      my_each do |i|
-        result = false if i
-        break if i
-      end
-      return result
-    end
-    my_each do |i|
-      result = false if yield i
-      break if yield i
+    each do |i|
+        if input.class == Class && ((i).is_a?(input))
+            result = false
+            break
+        elsif input.is_a?(Regexp) && (input.match?(i))
+            result = false
+            break
+        elsif !block_given? && input.nil? && i
+            result = false
+            break
+        elsif block_given? && yield(i)
+            result = false
+            break
+        end
     end
     result
-  end
+end
 
   # If no argument and no block is passed returns the number of items in the array.
   # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
