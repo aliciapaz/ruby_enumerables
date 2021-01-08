@@ -157,10 +157,10 @@ module Enumerable
       memo = nil
     end
     unless sym.nil?
-      init_sym = (memo.nil?) ? self[0] : memo.public_send sym, self[0]
+      init_sym = (memo.nil?) ? self[0] : memo.public_send (sym, self[0])
     end
     if block_given?
-      init_block = (memo.nil?) ? self[0] : yield memo, self[0]
+      init_block = (memo.nil?) ? self[0] : yield (memo, self[0])
     end
     j = 1
     while j < length
@@ -168,6 +168,7 @@ module Enumerable
       init_block = yield init_block, self[j] if block_given?
       j += 1
     end
+
     return init_sym unless sym.nil?
     return init_block if block_given?
 
