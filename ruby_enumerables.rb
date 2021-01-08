@@ -41,7 +41,7 @@ module Enumerable
   def my_all?(input = nil)
     result = true
     each do |i|
-      if input.instance_of?(Class) && !i.is_a?(input)
+      if (input.instance_of?(Class) || input.is_a?(Module)) && !i.is_a?(input)
         result = false
         break
       elsif input.is_a?(Regexp) && !input.match?(i)
@@ -63,7 +63,7 @@ module Enumerable
   def my_any?(input = nil)
     result = false
     each do |i|
-      if input.instance_of?(Class) && i.is_a?(input)
+      if (input.instance_of?(Class) || input.is_a?(Module)) && i.is_a?(input)
         result = true
         break
       elsif input.is_a?(Regexp) && input.match?(i)
@@ -82,25 +82,25 @@ module Enumerable
 
   # Returns true if none of the values passes a test (defined as a block) or
   # if no block is given returns true if none of the values are truthy.
-  def my_none?(input = nil)
-    result = true
-    each do |i|
-      if input.instance_of?(Class) && i.is_a?(input)
-        result = false
-        break
-      elsif input.is_a?(Regexp) && input.match?(i)
-        result = false
-        break
-      elsif !block_given? && input.nil? && i
-        result = false
-        break
-      elsif block_given? && yield(i)
-        result = false
-        break
-      end
-    end
-    result
-  end
+  def my_none?(input = nil)
+    result = true
+    each do |i|
+      if (input.instance_of?(Class) || input.is_a?(Module)) && i.is_a?(input)
+        result = false
+        break
+      elsif input.is_a?(Regexp) && input.match?(i)
+        result = false
+        break
+      elsif !block_given? && input.nil? && i
+        result = false
+        break
+      elsif block_given? && yield(i)
+        result = false
+        break
+      end
+    end
+    result
+  end
 
   # If no argument and no block is passed returns the number of items in the array.
   # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
