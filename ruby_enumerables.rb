@@ -5,7 +5,6 @@
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Style/GuardClause
 # rubocop:disable Metrics/AbcSize
-
 module Enumerable
   # Iterates through the object, identical to #each
   def my_each
