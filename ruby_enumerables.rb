@@ -152,17 +152,15 @@ module Enumerable
   # An initial value for memo can be provided.
   # If an initial value is not provided, memo takes the value of the first element in the array.
   def my_inject(memo = nil, sym = nil)
-    return LocalJumpError if memo.nil? && sym.nil? && !block_given?
-
     if memo.is_a? Symbol
       sym = memo
       memo = nil
     end
     unless sym.nil?
-      init_sym = memo.nil? ? self[0] : memo.public_send(sym, self[0])
+      init_sym = (memo.nil?) ? self[0] : memo.public_send(sym, self[0])
     end
     if block_given?
-      init_block = memo.nil? ? self[0] : yield(memo, self[0])
+      init_block = (memo.nil?) ? self[0] : yield(memo, self[0])
     end
     j = 1
     while j < length
@@ -172,6 +170,7 @@ module Enumerable
     end
     return init_sym unless sym.nil?
     return init_block if block_given?
+    p LocalJumpError if memo.nil? && sym.nil? && !block_given?
   end
 end
 
