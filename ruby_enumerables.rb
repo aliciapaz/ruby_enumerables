@@ -18,7 +18,7 @@ module Enumerable
     for i in self do
         yield i, j
         j += 1
-    end 
+    end
     self
   end
 
@@ -29,25 +29,26 @@ module Enumerable
     my_each do |i|
       result.push(i) if yield i
     end
-    p result
+    result
   end
 
   # Returns true if every value passes a test (defined as a block) or
   # if no block is given returns true if all values are truthy.
-  def my_all?
-    result = true
-    unless block_given?
-      my_each do |i|
-        result = false unless i
-        break unless i
+  def my_all?(input = nil)
+      result = true
+      each do |i|
+          if input.class == Class && !((i).is_a?(input))
+              result = false
+              break
+          elsif !block_given? && !i
+              result = false
+              break
+          elsif block_given? && !yield(i)
+              result = false
+              break
+          end
       end
       return result
-    end
-    my_each do |i|
-      result = false unless yield i
-      break unless yield i
-    end
-    result
   end
 
   # Returns true if any value passes a test defined as a block.
