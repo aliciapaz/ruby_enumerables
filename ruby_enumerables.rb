@@ -142,7 +142,7 @@ module Enumerable
       result.push(input_proc.call(i)) if input_proc.is_a?(Proc)
       result.push(yield i) if block_given? && input_proc.nil?
     end
-    p result
+    result
   end
 
   # Combines the element in an array applying a binary operation
