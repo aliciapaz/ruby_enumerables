@@ -41,7 +41,7 @@ module Enumerable
   def my_all?(input = nil)
     result = true
     each do |i|
-      if input.instance_of?(Class) && !(i).is_a?(input)
+      if input.instance_of?(Class) && !i.is_a?(input)
         result = false
         break
       elsif input.is_a?(Regexp) && !input.match?(i)
@@ -63,7 +63,7 @@ module Enumerable
   def my_any?(input = nil)
     result = false
     each do |i|
-      if input.instance_of?(Class) && (i).is_a?(input)
+      if input.instance_of?(Class) && i.is_a?(input)
         result = true
         break
       elsif input.is_a?(Regexp) && input.match?(i)
@@ -85,7 +85,7 @@ module Enumerable
   def my_none?(input = nil)
     result = true
     each do |i|
-      if input.instance_of?(Class) && (i).is_a?(input)
+      if input.instance_of?(Class) && i.is_a?(input)
         result = false
         break
       elsif input.is_a?(Regexp) && input.match?(i)
