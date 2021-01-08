@@ -2,7 +2,10 @@
 # rubocop:disable Metrics/ModuleLength
 # rubocop:disable Metrics/CyclomaticComplexity
 # rubocop:disable Metrics/PerceivedComplexity
-
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Style/GuardClause
+# rubocop:disable Metrics/AbcSize
+
 module Enumerable
   # Iterates through the object, identical to #each
   def my_each
@@ -154,7 +157,7 @@ module Enumerable
   def my_inject(memo = nil, sym = nil)
     return LocalJumpError if memo.nil? && sym.nil? && !block_given?
 
-    if self.is_a? Array
+    if is_a? Array
       if memo.is_a? Symbol
         sym = memo
         memo = nil
@@ -174,7 +177,7 @@ module Enumerable
       return init_sym unless sym.nil?
       return init_block if block_given?
     end
-    if self.is_a? Range
+    if is_a? Range
       if memo.is_a? Symbol
         sym = memo
         memo = nil
@@ -206,3 +209,6 @@ multiply_els([2, 4, 5])
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Style/GuardClause
+# rubocop:enable Metrics/AbcSize
