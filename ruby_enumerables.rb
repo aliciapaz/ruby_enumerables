@@ -42,23 +42,21 @@ module Enumerable
   # if no block is given returns true if all values are truthy.
   def my_all?(input = nil)
     result = true
+    check = true
     each do |i|
-      if (input.instance_of?(Class) || input.is_a?(Module)) && !i.is_a?(input)
-        result = false
-        break
-      elsif input.is_a?(Regexp) && !input.match?(i)
-        result = false
-        break
-      elsif !block_given? && !i
-        result = false
-        break
-      elsif block_given? && !yield(i)
-        result = false
-        break
-      else
-        result = false unless i == input
-        break unless i == input
-      end
+      check = if block_given?
+                yield i
+              elsif input.instance_of?(Class) || input.is_a?(Module)
+                i.is_a?(input)
+              elsif input.is_a?(Regexp)
+                input.match?(i)
+              elsif input.nil?
+                i
+              else
+                i == input
+              end
+      result = false unless check
+      break unless result
     end
     result
   end
@@ -67,23 +65,21 @@ module Enumerable
   # If no block is given, it returns true if any value is truthy.
   def my_any?(input = nil)
     result = false
+    check = false
     each do |i|
-      if (input.instance_of?(Class) || input.is_a?(Module)) && i.is_a?(input)
-        result = true
-        break
-      elsif input.is_a?(Regexp) && input.match?(i)
-        result = true
-        break
-      elsif !block_given? && input.nil? && i
-        result = true
-        break
-      elsif block_given? && yield(i)
-        result = true
-        break
-      else
-        result = true if i == input
-        break if i == input
-      end
+      check = if block_given?
+                yield i
+              elsif input.instance_of?(Class) || input.is_a?(Module)
+                i.is_a?(input)
+              elsif input.is_a?(Regexp)
+                input.match?(i)
+              elsif input.nil?
+                i
+              else
+                i == input
+              end
+      result = true if check
+      break if result
     end
     result
   end
@@ -92,23 +88,21 @@ module Enumerable
   # if no block is given returns true if none of the values are truthy.
   def my_none?(input = nil)
     result = true
+    check = true
     each do |i|
-      if (input.instance_of?(Class) || input.is_a?(Module)) && i.is_a?(input)
-        result = false
-        break
-      elsif input.is_a?(Regexp) && input.match?(i)
-        result = false
-        break
-      elsif !block_given? && input.nil? && i
-        result = false
-        break
-      elsif block_given? && yield(i)
-        result = false
-        break
-      else
-        result = false if i == input
-        break if i == input
-      end
+      check = if block_given?
+                yield i
+              elsif input.instance_of?(Class) || input.is_a?(Module)
+                i.is_a?(input)
+              elsif input.is_a?(Regexp)
+                input.match?(i)
+              elsif input.nil?
+                i
+              else
+                i == input
+              end
+      result = false if check
+      break unless result
     end
     result
   end
