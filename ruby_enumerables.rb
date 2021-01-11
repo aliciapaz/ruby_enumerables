@@ -1,95 +1,90 @@
-# rubocop:disable Style/For
-# rubocop:disable Metrics/ModuleLength
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Metrics/PerceivedComplexity
+# rubocop:disable Style/For
+# rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Style/GuardClause
 # rubocop:disable Metrics/AbcSize
-module Enumerable
-  # Iterates through the object, identical to #each
-  def my_each
-    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
+module Enumerable
+  # Iterates through the object, identical to #each
+  def my_each
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
 
-    for i in self
-      yield i
-    end
-  end
+    for i in self
+      yield i
+    end
+  end
+  # Iterates through the object, returning value and index. Identical to #each_with_index
+  def my_each_with_index
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
 
-  # Iterates through the object, returning value and index. Identical to #each_with_index
-  def my_each_with_index
-    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
+    j = 0
+    for i in self do
+      yield i, j
+      j += 1
+    end
+    self
+  end
+  # Creates a new array containing the elements of self that match the provided test.
+  def my_select
+    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
 
-    j = 0
-    for i in self do
-      yield i, j
-      j += 1
-    end
-    self
-  end
-
-  # Creates a new array containing the elements of self that match the provided test.
-  def my_select
-    return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
-
-    result = []
-    my_each do |i|
-      result.push(i) if yield i
-    end
-    result
-  end
-
-  # Returns true if every value passes a test (defined as a block) or
-  # if no block is given returns true if all values are truthy.
-  def my_all?(input = nil)
-    result = true
-    each do |i|
+    result = []
+    my_each do |i|
+      result.push(i) if yield i
+    end
+    result
+  end
+  # Returns true if every value passes a test (defined as a block) or
+  # if no block is given returns true if all values are truthy.
+  def my_all?(input = nil)
+    result = true
+    each do |i|
       if (input.instance_of?(Class) || input.is_a?(Module)) && !i.is_a?(input)
-        result = false
-        break
-      elsif input.is_a?(Regexp) && !input.match?(i)
-        result = false
-        break
-      elsif !block_given? && !i
-        result = false
-        break
-      elsif block_given? && !yield(i)
-        result = false
-        break
+        result = false
+        break
+      elsif input.is_a?(Regexp) && !input.match?(i)
+        result = false
+        break
+      elsif !block_given? && !i
+        result = false
+        break
+      elsif block_given? && !yield(i)
+        result = false
+        break
       else
         result = false unless i == input
         break unless i == input
-      end
-    end
-    result
-  end
-
-  # Returns true if any value passes a test defined as a block.
-  # If no block is given, it returns true if any value is truthy.
-  def my_any?(input = nil)
-    result = false
-    each do |i|
+      end
+    end
+    result
+  end
+  # Returns true if any value passes a test defined as a block.
+  # If no block is given, it returns true if any value is truthy.
+  def my_any?(input = nil)
+    result = false
+    each do |i|
       if (input.instance_of?(Class) || input.is_a?(Module)) && i.is_a?(input)
-        result = true
-        break
-      elsif input.is_a?(Regexp) && input.match?(i)
-        result = true
-        break
-      elsif !block_given? && input.nil? && i
-        result = true
-        break
-      elsif block_given? && yield(i)
-        result = true
-        break
+        result = true
+        break
+      elsif input.is_a?(Regexp) && input.match?(i)
+        result = true
+        break
+      elsif !block_given? && input.nil? && i
+        result = true
+        break
+      elsif block_given? && yield(i)
+        result = true
+        break
       else
         result = true if i == input
         break if i == input
-      end
-    end
-    result
-  end
-
-  # Returns true if none of the values passes a test (defined as a block) or
-  # if no block is given returns true if none of the values are truthy.
+      end
+    end
+    result
+  end
+  # Returns true if none of the values passes a test (defined as a block) or
+  # if no block is given returns true if none of the values are truthy.
   def my_none?(input = nil)
     result = true
     each do |i|
@@ -112,59 +107,54 @@ module Enumerable
     end
     result
   end
-
-  # If no argument and no block is passed returns the number of items in the array.
-  # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
-  # If a block is passed, but no argument is passed, returns the number of items that pass the test.
-  # If an argument and a block are passed returns the number of items equal to the argument and prints a warning.
-  def my_count(input = nil)
-    count = 0
-    if !block_given? && input.nil?
-      my_each do
-        count += 1
-      end
-      return count
-    end
-    unless input.nil?
-      my_each do |i|
-        count += 1 if i == input
-      end
-      p 'Use either a block or an argument, Not Both!' if block_given?
-      return count
-    end
-    my_each do |i|
-      count += 1 if yield i
-    end
-    count
-  end
-
-  # map that accepts procs
-  # Returns an array containing the result of the block provided
-  # applied to each one of the elements of the array provided as argument.
-  def my_map(input_proc = nil)
-    return enum_for(:each) if input_proc.nil? && !block_given? # returns an Enumerator when no block nor proc are given
-
-    if !input_proc.nil? && !input_proc.is_a?(Proc)
-      puts 'Error! Argument must be a Proc'
-      return nil
-    end
-    result = []
-    my_each do |i|
-      result.push(input_proc.call(i)) if input_proc.is_a?(Proc)
-      result.push(yield i) if block_given? && input_proc.nil?
-    end
-    result
-  end
-
-  # Combines the element in an array applying a binary operation
-  # and returns the result in an accumulator variable ("memo")
-  # When a block and a symbol is given, it prints an Error message.
-  # Either a block or a symbol for a binary operation can be provided.
-  # An initial value for memo can be provided.
-  # If an initial value is not provided, memo takes the value of the first element in the array.
+  # If no argument and no block is passed returns the number of items in the array.
+  # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
+  # If a block is passed, but no argument is passed, returns the number of items that pass the test.
+  # If an argument and a block are passed returns the number of items equal to the argument and prints a warning.
+  def my_count(input = nil)
+    count = 0
+    if !block_given? && input.nil?
+      my_each do
+        count += 1
+      end
+      return count
+    end
+    unless input.nil?
+      my_each do |i|
+        count += 1 if i == input
+      end
+      p 'Use either a block or an argument, Not Both!' if block_given?
+      return count
+    end
+    my_each do |i|
+      count += 1 if yield i
+    end
+    count
+  end
+  # map that accepts procs
+  # Returns an array containing the result of the block provided
+  # applied to each one of the elements of the array provided as argument.
+  def my_map(input_proc = nil)
+    return enum_for(:each) if input_proc.nil? && !block_given? # returns an Enumerator when no block nor proc are given
+    if !input_proc.nil? && !input_proc.is_a?(Proc)
+      puts 'Error! Argument must be a Proc'
+      return nil
+    end
+    result = []
+    my_each do |i|
+      result.push(input_proc.call(i)) if input_proc.is_a?(Proc)
+      result.push(yield i) if block_given? && input_proc.nil?
+    end
+    result
+  end
+  # Combines the element in an array applying a binary operation
+  # and returns the result in an accumulator variable ("memo")
+  # When a block and a symbol is given, it prints an Error message.
+  # Either a block or a symbol for a binary operation can be provided.
+  # An initial value for memo can be provided.
+  # If an initial value is not provided, memo takes the value of the first element in the array.
   def my_inject(memo = nil, sym = nil)
     raise LocalJumpError if memo.nil? && sym.nil? && !block_given?
-
     if is_a? Array
       if memo.is_a? Symbol
         sym = memo
@@ -205,18 +195,17 @@ module Enumerable
       return init_block if block_given?
     end
   end
-end
+end
 
-def multiply_els(array)
-  array.my_inject(:*)
-end
+def multiply_els(array)
+  array.my_inject(:*)
+end
 
-multiply_els([2, 4, 5])
-
-# rubocop:enable Style/For
-# rubocop:enable Metrics/ModuleLength
-# rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Metrics/PerceivedComplexity
+multiply_els([2, 4, 5])
+# rubocop:enable Style/For
+# rubocop:enable Metrics/ModuleLength
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Style/GuardClause
 # rubocop:enable Metrics/AbcSize
