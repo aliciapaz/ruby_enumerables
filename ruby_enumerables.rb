@@ -14,6 +14,7 @@ module Enumerable
       yield i
     end
   end
+
   # Iterates through the object, returning value and index. Identical to #each_with_index
   def my_each_with_index
     return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
@@ -25,6 +26,7 @@ module Enumerable
     end
     self
   end
+
   # Creates a new array containing the elements of self that match the provided test.
   def my_select
     return enum_for(:each) unless block_given? # returns an Enumerator when no block is given
@@ -35,6 +37,7 @@ module Enumerable
     end
     result
   end
+
   # Returns true if every value passes a test (defined as a block) or
   # if no block is given returns true if all values are truthy.
   def my_all?(input = nil)
@@ -59,6 +62,7 @@ module Enumerable
     end
     result
   end
+
   # Returns true if any value passes a test defined as a block.
   # If no block is given, it returns true if any value is truthy.
   def my_any?(input = nil)
@@ -83,6 +87,7 @@ module Enumerable
     end
     result
   end
+
   # Returns true if none of the values passes a test (defined as a block) or
   # if no block is given returns true if none of the values are truthy.
   def my_none?(input = nil)
@@ -107,6 +112,7 @@ module Enumerable
     end
     result
   end
+
   # If no argument and no block is passed returns the number of items in the array.
   # If an argument is passed, but no block is passed, returns the number of items equal to the argument.
   # If a block is passed, but no argument is passed, returns the number of items that pass the test.
@@ -131,11 +137,13 @@ module Enumerable
     end
     count
   end
+
   # map that accepts procs
   # Returns an array containing the result of the block provided
   # applied to each one of the elements of the array provided as argument.
   def my_map(input_proc = nil)
     return enum_for(:each) if input_proc.nil? && !block_given? # returns an Enumerator when no block nor proc are given
+
     if !input_proc.nil? && !input_proc.is_a?(Proc)
       puts 'Error! Argument must be a Proc'
       return nil
@@ -147,6 +155,7 @@ module Enumerable
     end
     result
   end
+
   # Combines the element in an array applying a binary operation
   # and returns the result in an accumulator variable ("memo")
   # When a block and a symbol is given, it prints an Error message.
@@ -155,6 +164,7 @@ module Enumerable
   # If an initial value is not provided, memo takes the value of the first element in the array.
   def my_inject(memo = nil, sym = nil)
     raise LocalJumpError if memo.nil? && sym.nil? && !block_given?
+
     if is_a? Array
       if memo.is_a? Symbol
         sym = memo
