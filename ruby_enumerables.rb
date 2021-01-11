@@ -44,17 +44,17 @@ module Enumerable
     result = true
     check = true
     each do |i|
-      if block_given?
-        check = yield i
-      elsif input.instance_of?(Class) || input.is_a?(Module)
-        check = i.is_a?(input)
-      elsif input.is_a?(Regexp)
-        check = input.match?(i)
-      elsif input.nil?
-        check = i
-      else
-        check = i == input
-      end
+      check = if block_given?
+                yield i
+              elsif input.instance_of?(Class) || input.is_a?(Module)
+                i.is_a?(input)
+              elsif input.is_a?(Regexp)
+                input.match?(i)
+              elsif input.nil?
+                i
+              else
+                i == input
+              end
       result = false unless check
       break unless result
     end
@@ -67,17 +67,17 @@ module Enumerable
     result = false
     check = false
     each do |i|
-      if block_given?
-        check = yield i
-      elsif input.instance_of?(Class) || input.is_a?(Module)
-        check = i.is_a?(input)
-      elsif input.is_a?(Regexp)
-        check = input.match?(i)
-      elsif input.nil?
-        check = i
-      else
-        check = i == input
-      end
+      check = if block_given?
+                yield i
+              elsif input.instance_of?(Class) || input.is_a?(Module)
+                i.is_a?(input)
+              elsif input.is_a?(Regexp)
+                input.match?(i)
+              elsif input.nil?
+                i
+              else
+                i == input
+              end
       result = true if check
       break if result
     end
@@ -90,17 +90,17 @@ module Enumerable
     result = true
     check = true
     each do |i|
-      if block_given?
-        check = yield i
-      elsif input.instance_of?(Class) || input.is_a?(Module)
-        check = i.is_a?(input)
-      elsif input.is_a?(Regexp)
-        check = input.match?(i)
-      elsif input.nil?
-        check = i
-      else
-        check = i == input
-      end
+      check = if block_given?
+                yield i
+              elsif input.instance_of?(Class) || input.is_a?(Module)
+                i.is_a?(input)
+              elsif input.is_a?(Regexp)
+                input.match?(i)
+              elsif input.nil?
+                i
+              else
+                i == input
+              end
       result = false if check
       break unless result
     end
