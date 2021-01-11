@@ -71,7 +71,7 @@ module Enumerable
         check = yield i
       elsif input.instance_of?(Class) || input.is_a?(Module)
         check = i.is_a?(input)
-      elsif input.is_a?(Regexp) && !
+      elsif input.is_a?(Regexp)
         check = input.match?(i)
       elsif input.nil?
         check = i
